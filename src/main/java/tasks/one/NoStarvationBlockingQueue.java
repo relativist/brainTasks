@@ -6,12 +6,22 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+// Изменения
+//1. изменить модификатор методов класса на public и методов. (расширение области видимости)
+//2. if (queue.size() == MAX_SIZE) {    На   while (queue.size() == MAX_SIZE) {
+// ввиду того что поток может проснуться а условие все еще будет неверным,
+// поэтому нужно еще раз проверить, отсюда и while. Потоки сами по себе могут просыпаться (внезапно).
+// А у нас еще и общий Condition в двух методах c signal-ом. Поэтому while прям обязательно.
+//3. добавить condition.signal(); в методы poll и add. для оповещения потоков, что ресурс освободился.
+
+// тесты в RunQueuesTest классе.
+
 public class NoStarvationBlockingQueue<E> {
 
     private final Lock lock = new ReentrantLock();
     private final Condition condition = lock.newCondition();
 
-    private final static int MAX_SIZE = 2;
+    private final static int MAX_SIZE = 100;
     private final Queue<E> queue = new ArrayDeque<>(MAX_SIZE);
 
     public void add(E e) {
@@ -55,14 +65,3 @@ public class NoStarvationBlockingQueue<E> {
     }
 }
 
-// изменения
-//1. изменить модификатор методов класса на public и методов. (расширение области видимости)
-//2. if (queue.size() == MAX_SIZE) {    На   while (queue.size() == MAX_SIZE) {
-// ввиду того что поток может проснуться а условие все еще будет неверным,
-// поэтому нужно еще раз проверить, отсюда и while. Потоки сами по себе могут просыпаться (внезапно).
-// А у нас еще и общий Condition в двух методах c signal-ом. Поэтому while прям обязательно.
-//3. добавить condition.signal(); в методы poll и add. для оповещения потоков, что ресурс освободился.
-
-
-
-// тесты в RunQueuesTest классе.
