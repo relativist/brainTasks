@@ -9,14 +9,6 @@ import java.util.Arrays;
 public class BigIntergers {
     private static final int SIZE = 30_000_000;
 
-    private static final int[] volumeOne = new int[SIZE];
-    private static final int[] volumeTwo = new int[SIZE];
-
-    static {
-        fill(volumeOne);
-        fill(volumeTwo);
-    }
-
     private static void fill(int[] volume) {
         for (int i = 0; i < volume.length; i++) {
             volume[i] = i;
@@ -24,11 +16,16 @@ public class BigIntergers {
     }
 
     public static void main(String[] args) {
-        customWay();
-        shortWay();
+        int[] volumeOne = new int[SIZE];
+        int[] volumeTwo = new int[SIZE];
+        fill(volumeOne);
+        fill(volumeTwo);
+
+        customWay(volumeOne,volumeTwo);
+        shortWay(volumeOne,volumeTwo);
     }
 
-    private static void customWay() {
+    private static int [] customWay(int[] volumeOne, int[] volumeTwo) {
         long start = System.currentTimeMillis();
         int[] all = new int[volumeOne.length + volumeTwo.length];
 
@@ -66,15 +63,17 @@ public class BigIntergers {
         long end = System.currentTimeMillis();
         long duration = end - start;
         log.info("custom way: {} ms", duration);
+        return all;
     }
 
-    private static void shortWay() {
+    private static int [] shortWay(int[] volumeOne, int[] volumeTwo) {
         long start = System.currentTimeMillis();
         int[] all = ArrayUtils.addAll(volumeOne, volumeTwo);
         Arrays.sort(all);
         long end = System.currentTimeMillis();
         long duration = end - start;
         log.info("short way: {} ms", duration);
+        return all;
     }
 
 
